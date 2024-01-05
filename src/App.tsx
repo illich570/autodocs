@@ -1,13 +1,7 @@
-import { Suspense } from "react";
-import { router as Router } from "./components/Router";
-import { RouterProvider } from "@tanstack/react-router";
+import { Router } from '@/components/Router'
 
 function App() {
-  return (
-    <Suspense fallback={<div />}>
-      <RouterProvider router={Router} />
-    </Suspense>
-  );
+  return <Router />
 }
 
-export default App;
+export default App
