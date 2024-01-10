@@ -231,6 +231,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^3.3.4":
+  version: 3.3.4
+  resolution: "@hookform/resolvers@npm:3.3.4"
+  peerDependencies:
+    react-hook-form: ^7.0.0
+  checksum: f7a5b8ba59cbb0859e7a212bd5cbcbc70bbdddd21d4fbe9f4a96d149b5756470cb29857a50334d8c1c64392e21007ccf5288d26aa407431784d4006a2570cb36
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.13":
   version: 0.11.13
   resolution: "@humanwhocodes/config-array@npm:0.11.13"
@@ -953,6 +962,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "autodocs@workspace:."
   dependencies:
+    "@hookform/resolvers": "npm:^3.3.4"
     "@radix-ui/react-slot": "npm:^1.0.2"
     "@types/node": "npm:^20.10.6"
     "@types/react": "npm:^18.2.43"
@@ -974,6 +984,7 @@ __metadata:
     prettier-plugin-tailwindcss: "npm:^0.5.11"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    react-hook-form: "npm:^7.49.3"
     tailwind-merge: "npm:^2.2.0"
     tailwindcss: "npm:^3.4.0"
     tailwindcss-animate: "npm:^1.0.7"
@@ -3256,6 +3267,15 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
   checksum: 66dfc5f93e13d0674e78ef41f92ed21dfb80f9c4ac4ac25a4b51046d41d4d2186abc915b897f69d3d0ebbffe6184e7c5876f2af26bfa956f179225d921be713a
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.49.3":
+  version: 7.49.3
+  resolution: "react-hook-form@npm:7.49.3"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18
+  checksum: f8e5b2dcc3d97c820b4fbac262d7e914d74f385f26f34da31b8efc6c0f32ba995f2a2330bdfd3d8b7c8b56a52349a0cbc0c0dbe9053b3971e5e0c78003dfb7f0
   languageName: node
   linkType: hard
 
