@@ -13,7 +13,7 @@ import { useFormContext } from 'react-hook-form'
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string
   label: string
-  description: string
+  description?: string
 }
 
 const InputController = ({ name, label, description, ...propsField }: InputProps) => {
