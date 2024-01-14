@@ -28,7 +28,7 @@ const InputController = ({ name, label, description, ...propsField }: InputProps
           <FormControl>
             <Input {...field} {...propsField} />
           </FormControl>
-          {description && <FormDescription>This is your public display name.</FormDescription>}
+          {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
         </FormItem>
       )}
