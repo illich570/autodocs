@@ -8,7 +8,13 @@ import {
   FormMessage,
 } from '@/components/ui/Form'
 import { useFormContext } from 'react-hook-form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/Select'
 
 type SelectOptions = {
   value: string
