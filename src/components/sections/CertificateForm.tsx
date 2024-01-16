@@ -5,6 +5,7 @@ import { FormProvider } from '@/components/FormProvider'
 import { InputController } from '@/components/form/InputController'
 import { Button } from '@/components/ui/Button'
 import { SelectController } from '@/components/form/SelectController'
+import { NumberFormatController } from '@/components/form/NumberFormatController'
 
 const CertificateForm = () => {
   const schema = object({
@@ -17,6 +18,7 @@ const CertificateForm = () => {
     revisionReasons: string([minLength(1, 'La razón de revisión es requerida')]),
     sex: string([minLength(1, 'El sexo es requerido')]),
     currency: string([minLength(1, 'La moneda es requerida')]),
+    securityNumber: string([minLength(1, 'El numero de hoja de seguridad es requerido')]),
   })
 
   type validationSchema = Output<typeof schema>
@@ -33,6 +35,7 @@ const CertificateForm = () => {
       revisionReasons: '',
       sex: '',
       currency: '',
+      securityNumber: '',
     },
   })
 
@@ -45,8 +48,8 @@ const CertificateForm = () => {
         Generar certificación de ingresos
       </h3>
       <FormProvider methods={methods} onSubmit={submit} className="flex flex-col space-y-4">
-        <InputController name="holderName" label="Nombre del titular" />
-        <InputController name="holderId" label="Numero de Identificacion" />
+        <InputController name="holderName" label="Nombre del titular" type="text" />
+        <InputController name="holderId" label="Numero de Identificacion" type="text" />
         <SelectController
           name="sex"
           label="Sexo"
@@ -60,21 +63,25 @@ const CertificateForm = () => {
           name="addressedName"
           label="Nombre del receptor"
           description="A quien va dirigido el documento"
+          type="text"
         />
         <InputController
           name="workActivity"
           label="Actividad laboral"
           description="Actividad que realiza el titular"
+          type="text"
         />
         <InputController
           name="reasonDocument"
           label="Razón de certificación"
           description="Finalidad del documento"
+          type="text"
         />
         <InputController
           name="revisionReasons"
           label="Elementos revisados"
           description="Razones o elementos revisados"
+          type="text"
         />
         <SelectController
           name="currency"
@@ -85,6 +92,31 @@ const CertificateForm = () => {
             { value: 'USD', label: '$ (Dolares', disabled: true },
           ]}
         />
+        <InputController
+          name="securityNumber"
+          label="Núm. de Hoja de Seguridad"
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+        />
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
+          <NumberFormatController
+            name="amount"
+            label="Monto"
+            description="Monto de ingreso mensual"
+            placeholder="Ej: 500,00"
+            classNameItem="flex-0"
+          />
+          <NumberFormatController
+            name="amountExchange"
+            label="Tasa de cambio"
+            description="Monto de Tasa de cambio mensual"
+            placeholder="Ej: 36,10"
+            classNameItem="flex-0"
+          />
+          <Button type="button">Agregar</Button>
+        </div>
+
         <Button type="submit">Generar certificación</Button>
       </FormProvider>
     </div>

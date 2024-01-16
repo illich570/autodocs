@@ -1,4 +1,3 @@
-import { InputHTMLAttributes } from 'react'
 import {
   FormControl,
   FormDescription,
@@ -7,23 +6,24 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/Form'
-import { Input } from '@/components/ui/Input'
+import { NumberFormatInput } from '@/components/ui/NumberFormatInput'
 import { useFormContext } from 'react-hook-form'
+import { NumericFormatProps } from 'react-number-format'
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface NumberFormatInputProps extends NumericFormatProps {
   name: string
   label: string
   description?: string
   classNameItem?: string
 }
 
-const InputController = ({
+const NumberFormatController = ({
   name,
   label,
   description,
   classNameItem,
   ...propsField
-}: InputProps) => {
+}: NumberFormatInputProps) => {
   const { control } = useFormContext()
   return (
     <FormField
@@ -33,7 +33,7 @@ const InputController = ({
         <FormItem className={classNameItem}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input {...field} {...propsField} />
+            <NumberFormatInput {...field} {...propsField} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />
@@ -43,4 +43,4 @@ const InputController = ({
   )
 }
 
-export { InputController }
+export { NumberFormatController }
