@@ -6,8 +6,27 @@ import { InputController } from '@/components/form/InputController'
 import { Button } from '@/components/ui/Button'
 import { SelectController } from '@/components/form/SelectController'
 import { NumberFormatController } from '@/components/form/NumberFormatController'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/Table'
+import { useState } from 'react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'
+import { DeleteIcon } from 'lucide-react'
+
+export type Iamounts = {
+  amount: string
+  amountExchange: string
+  id: number
+}
 
 const CertificateForm = () => {
+  const [amounts, setAmounts] = useState<Iamounts[]>([])
+
   const schema = object({
     username: string([minLength(1, 'El nombre de usuario es requerido')]),
     workActivity: string([minLength(1, 'La actividad laboral es requerida')]),
@@ -19,6 +38,8 @@ const CertificateForm = () => {
     sex: string([minLength(1, 'El sexo es requerido')]),
     currency: string([minLength(1, 'La moneda es requerida')]),
     securityNumber: string([minLength(1, 'El numero de hoja de seguridad es requerido')]),
+    amount: string(),
+    amountExchange: string(),
   })
 
   type validationSchema = Output<typeof schema>
@@ -36,8 +57,29 @@ const CertificateForm = () => {
       sex: '',
       currency: '',
       securityNumber: '',
+      amount: '',
+      amountExchange: '',
     },
   })
+
+  const { setValue, getValues } = methods
+
+  const handleAddAmount = () => {
+    setAmounts((prev) => [
+      ...prev,
+      {
+        amount: getValues('amount'),
+        amountExchange: getValues('amountExchange'),
+        id: prev.length === 0 ? 1 : prev[prev.length - 1].id + 1,
+      },
+    ])
+    setValue('amount', '')
+    setValue('amountExchange', '')
+  }
+
+  const handleRemoveAmount = (id: number) => {
+    setAmounts((prev) => prev.filter((amount) => amount.id !== id))
+  }
 
   const submit = (data: validationSchema) => {
     console.log(data)
@@ -114,9 +156,48 @@ const CertificateForm = () => {
             placeholder="Ej: 36,10"
             classNameItem="flex-0"
           />
-          <Button type="button">Agregar</Button>
+          <Button type="button" onClick={handleAddAmount}>
+            Agregar
+          </Button>
         </div>
-
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-center">Ingreso</TableHead>
+              <TableHead className="text-center">Tasa</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {amounts.map((amount) => (
+              <TableRow key={`table_row_${amount.id}`}>
+                <TableCell className="text-center">
+                  {amount.amount + ' '}
+                  {getValues('currency')}
+                </TableCell>
+                <TableCell className="text-center">
+                  {amount.amountExchange + ' '}
+                  {getValues('currency')}
+                </TableCell>
+                <TableCell className="w-[50px] text-center">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger
+                        onClick={() => {
+                          handleRemoveAmount(amount.id)
+                        }}
+                      >
+                        <DeleteIcon />
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Eliminar</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
         <Button type="submit">Generar certificación</Button>
       </FormProvider>
     </div>
