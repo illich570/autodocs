@@ -1,6 +1,6 @@
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useForm } from 'react-hook-form'
-import { object, string, Output, minLength } from 'valibot'
+import { Input } from 'valibot'
 import { FormProvider } from '@/components/FormProvider'
 import { InputController } from '@/components/form/InputController'
 import { Button } from '@/components/ui/Button'
@@ -17,6 +17,12 @@ import {
 import { useState } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'
 import { DeleteIcon } from 'lucide-react'
+import { DatePickerController } from '@/components/form/DatePickerController'
+import { useGenerateDocument } from '@/queryHooks/useDocuments'
+import { toast } from 'sonner'
+import { isAxiosError } from 'axios'
+import { CertificateSchemaForm, CertificateSchemaParams } from '@/components/sections/schemas'
+import { format } from 'date-fns'
 
 export type Iamounts = {
   amount: string
@@ -26,32 +32,20 @@ export type Iamounts = {
 
 const CertificateForm = () => {
   const [amounts, setAmounts] = useState<Iamounts[]>([])
+  const [resultPdf, setResultPdf] = useState<string | null>(null)
+  const { mutate } = useGenerateDocument()
 
-  const schema = object({
-    username: string([minLength(1, 'El nombre de usuario es requerido')]),
-    workActivity: string([minLength(1, 'La actividad laboral es requerida')]),
-    reasonDocument: string([minLength(1, 'La razón del documento es requerida')]),
-    addressedName: string([minLength(1, 'El nombre del receptor es requerido')]),
-    holderId: string([minLength(1, 'El numero de identificación es requerido')]),
-    holderName: string([minLength(1, 'El nombre del titular es requerido')]),
-    revisionReasons: string([minLength(1, 'La razón de revisión es requerida')]),
-    sex: string([minLength(1, 'El sexo es requerido')]),
-    currency: string([minLength(1, 'La moneda es requerida')]),
-    securityNumber: string([minLength(1, 'El numero de hoja de seguridad es requerido')]),
-    amount: string(),
-    amountExchange: string(),
-  })
-
-  type validationSchema = Output<typeof schema>
+  type validationSchema = Input<typeof CertificateSchemaForm>
+  type validationParamsSchema = Input<typeof CertificateSchemaParams>
 
   const methods = useForm<validationSchema>({
-    resolver: valibotResolver(schema),
+    resolver: valibotResolver(CertificateSchemaForm),
     defaultValues: {
-      username: '',
       workActivity: '',
       reasonDocument: '',
       addressedName: '',
       holderId: '',
+      typeId: '',
       holderName: '',
       revisionReasons: '',
       sex: '',
@@ -59,6 +53,9 @@ const CertificateForm = () => {
       securityNumber: '',
       amount: '',
       amountExchange: '',
+      quantityMonths: '',
+      dateGenerate: new Date(),
+      dateEmit: new Date(),
     },
   })
 
@@ -82,8 +79,46 @@ const CertificateForm = () => {
   }
 
   const submit = (data: validationSchema) => {
-    console.log(data)
+    if (amounts.length !== parseInt(data.quantityMonths)) {
+      return toast.error(
+        'La cantidad de meses no coincide con la cantidad de ingresos mensuales, por favor verifique.',
+      )
+    }
+    const listAmounts = []
+    const listExchangeRates = []
+    for (const amount of amounts) {
+      const parseredAmount = parseFloat(amount.amount.replace('.', '').replace(',', '.'))
+      const parseredAmountExchange = parseFloat(
+        amount.amountExchange.replace('.', '').replace(',', '.'),
+      )
+      listAmounts.push(parseredAmount)
+      listExchangeRates.push(parseredAmountExchange)
+    }
+    const dataParameters: validationParamsSchema = {
+      ...data,
+      dateGenerate: format(data.dateGenerate, 'dd/MM/yyyy'),
+      listAmounts,
+      listExchangeRates,
+      securityNumber: parseInt(data.securityNumber),
+      quantityMonths: parseInt(data.quantityMonths),
+      dateEmit: format(data.dateEmit, 'dd/MM/yyyy'),
+    }
+    mutate(dataParameters, {
+      onSuccess: (data) => {
+        console.log(data.data)
+        const urlCreated = URL.createObjectURL(data.data)
+        console.log(urlCreated)
+        setResultPdf(urlCreated)
+        toast.success('Documento generado correctamente!')
+      },
+      onError: (error) => {
+        if (isAxiosError(error)) {
+          toast.error(error.response?.data?.message || 'Error al generar el documento')
+        }
+      },
+    })
   }
+
   return (
     <div className="max-w-xl rounded-xl border bg-card p-6 text-card-foreground shadow">
       <h3 className="pb-2 text-2xl font-semibold tracking-tight first:mt-0">
@@ -91,7 +126,34 @@ const CertificateForm = () => {
       </h3>
       <FormProvider methods={methods} onSubmit={submit} className="flex flex-col space-y-4">
         <InputController name="holderName" label="Nombre del titular" type="text" />
-        <InputController name="holderId" label="Numero de Identificacion" type="text" />
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
+          <SelectController
+            name="typeId"
+            label="Tipo de identificación"
+            placeholder="Seleccione una opción"
+            values={[
+              { value: 'V', label: '(V) - Venezolano' },
+              { value: 'J', label: '(J) - Júridico' },
+              { value: 'E', label: '(E) - Extranjero' },
+            ]}
+            classNameItem="flex-0"
+          />
+          {/* <InputController
+            name="holderId"
+            label="Numero de Identificacion"
+            type="text"
+            classNameItem="flex-1"
+          /> */}
+          <NumberFormatController
+            name="amount"
+            label="Monto"
+            description="Monto de ingreso mensual"
+            placeholder="Ej: 27.811.211"
+            decimalScale={0}
+            decimalSeparator={''}
+          />
+        </div>
+
         <SelectController
           name="sex"
           label="Sexo"
@@ -140,6 +202,28 @@ const CertificateForm = () => {
           type="text"
           inputMode="numeric"
           pattern="[0-9]*"
+        />
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
+          <DatePickerController
+            name="dateGenerate"
+            label="Fecha de calculos"
+            description="Fecha de calculos de la certificación"
+            classNameItem="flex-1"
+          />
+          <DatePickerController
+            name="dateEmit"
+            label="Fecha de emisión"
+            description="Fecha de emisión del documento"
+            classNameItem="flex-1"
+          />
+        </div>
+        <InputController
+          name="quantityMonths"
+          label="Cantidad de meses"
+          type="number"
+          // inputMode="numeric"
+          // pattern="[0-9]*"
+          description="Cantidad de meses a calcular"
         />
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
           <NumberFormatController
@@ -200,6 +284,15 @@ const CertificateForm = () => {
         </Table>
         <Button type="submit">Generar certificación</Button>
       </FormProvider>
+      {resultPdf && (
+        <iframe
+          src={`${resultPdf}`}
+          style={{
+            width: '100%',
+            height: '100vh',
+          }}
+        />
+      )}
     </div>
   )
 }

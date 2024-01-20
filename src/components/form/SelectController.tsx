@@ -27,17 +27,25 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label: string
   description?: string
   placeholder?: string
+  classNameItem?: string
   values: SelectOptions[] | undefined
 }
 
-const SelectController = ({ name, label, description, values, placeholder }: SelectProps) => {
+const SelectController = ({
+  name,
+  label,
+  description,
+  values,
+  placeholder,
+  classNameItem,
+}: SelectProps) => {
   const { control } = useFormContext()
   return (
     <FormField
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={classNameItem}>
           <FormLabel>{label}</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
