@@ -14,9 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table'
-import { useState } from 'react'
+import { Dispatch, useState } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'
-import { DeleteIcon } from 'lucide-react'
+import { DeleteIcon, PlusCircleIcon } from 'lucide-react'
 import { DatePickerController } from '@/components/form/DatePickerController'
 import { useGenerateDocument } from '@/queryHooks/useDocuments'
 import { toast } from 'sonner'
@@ -30,9 +30,13 @@ export type Iamounts = {
   id: number
 }
 
-const CertificateForm = () => {
+type FormProps = {
+  handleResultPdf: Dispatch<React.SetStateAction<string | null>>
+}
+
+const CertificateForm = ({ handleResultPdf }: FormProps) => {
   const [amounts, setAmounts] = useState<Iamounts[]>([])
-  const [resultPdf, setResultPdf] = useState<string | null>(null)
+
   const { mutate } = useGenerateDocument()
 
   type validationSchema = Input<typeof CertificateSchemaForm>
@@ -105,10 +109,8 @@ const CertificateForm = () => {
     }
     mutate(dataParameters, {
       onSuccess: (data) => {
-        console.log(data.data)
         const urlCreated = URL.createObjectURL(data.data)
-        console.log(urlCreated)
-        setResultPdf(urlCreated)
+        handleResultPdf(urlCreated)
         toast.success('Documento generado correctamente!')
       },
       onError: (error) => {
@@ -122,7 +124,7 @@ const CertificateForm = () => {
   return (
     <div className="max-w-xl rounded-xl border bg-card p-6 text-card-foreground shadow">
       <h3 className="pb-2 text-2xl font-semibold tracking-tight first:mt-0">
-        Generar certificación de ingresos
+        Certificación de ingresos
       </h3>
       <FormProvider methods={methods} onSubmit={submit} className="flex flex-col space-y-4">
         <InputController name="holderName" label="Nombre del titular" type="text" />
@@ -138,19 +140,14 @@ const CertificateForm = () => {
             ]}
             classNameItem="flex-0"
           />
-          {/* <InputController
+          <InputController
             name="holderId"
-            label="Numero de Identificacion"
-            type="text"
+            label="Núm. de identificación"
             classNameItem="flex-1"
-          /> */}
-          <NumberFormatController
-            name="amount"
-            label="Monto"
-            description="Monto de ingreso mensual"
             placeholder="Ej: 27.811.211"
-            decimalScale={0}
-            decimalSeparator={''}
+            type="tel"
+            inputMode="numeric"
+            pattern="[0-9]*"
           />
         </div>
 
@@ -187,15 +184,7 @@ const CertificateForm = () => {
           description="Razones o elementos revisados"
           type="text"
         />
-        <SelectController
-          name="currency"
-          label="Moneda"
-          placeholder="Seleccione una opción"
-          values={[
-            { value: 'BS', label: 'Bs. (Bolivares)' },
-            { value: 'USD', label: '$ (Dolares', disabled: true },
-          ]}
-        />
+
         <InputController
           name="securityNumber"
           label="Núm. de Hoja de Seguridad"
@@ -225,6 +214,15 @@ const CertificateForm = () => {
           // pattern="[0-9]*"
           description="Cantidad de meses a calcular"
         />
+        <SelectController
+          name="currency"
+          label="Moneda"
+          placeholder="Seleccione una opción"
+          values={[
+            { value: 'BS', label: 'Bs. (Bolivares)' },
+            { value: 'USD', label: '$ (Dolares', disabled: true },
+          ]}
+        />
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
           <NumberFormatController
             name="amount"
@@ -240,11 +238,18 @@ const CertificateForm = () => {
             placeholder="Ej: 36,10"
             classNameItem="flex-0"
           />
-          <Button type="button" onClick={handleAddAmount}>
-            Agregar
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger onClick={handleAddAmount} type="button">
+                <PlusCircleIcon />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Agregar valores</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-        <Table>
+        <Table className="my-2">
           <TableHeader>
             <TableRow>
               <TableHead className="text-center">Ingreso</TableHead>
@@ -266,6 +271,7 @@ const CertificateForm = () => {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger
+                        type="button"
                         onClick={() => {
                           handleRemoveAmount(amount.id)
                         }}
@@ -284,15 +290,6 @@ const CertificateForm = () => {
         </Table>
         <Button type="submit">Generar certificación</Button>
       </FormProvider>
-      {resultPdf && (
-        <iframe
-          src={`${resultPdf}`}
-          style={{
-            width: '100%',
-            height: '100vh',
-          }}
-        />
-      )}
     </div>
   )
 }
