@@ -12,6 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <App />
       <ReactQueryDevtools initialIsOpen={false} />
+      <div id="modal-root" />
     </QueryClientProvider>
   </React.StrictMode>,
 )

@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table'
-import { Dispatch, useState } from 'react'
+import { Dispatch, useState, useEffect } from 'react'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/Tooltip'
 import { DeleteIcon, PlusCircleIcon } from 'lucide-react'
 import { DatePickerController } from '@/components/form/DatePickerController'
@@ -23,6 +23,7 @@ import { toast } from 'sonner'
 import { isAxiosError } from 'axios'
 import { CertificateSchemaForm, CertificateSchemaParams } from '@/components/sections/schemas'
 import { format } from 'date-fns'
+import { generateUUID } from '@/utils'
 
 export type Iamounts = {
   amount: string
@@ -36,6 +37,7 @@ type FormProps = {
 
 const CertificateForm = ({ handleResultPdf }: FormProps) => {
   const [amounts, setAmounts] = useState<Iamounts[]>([])
+  const [documentId, setDocumentId] = useState<string>('')
 
   const { mutate } = useGenerateDocument()
 
@@ -91,10 +93,8 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
     const listAmounts = []
     const listExchangeRates = []
     for (const amount of amounts) {
-      const parseredAmount = parseFloat(amount.amount.replace('.', '').replace(',', '.'))
-      const parseredAmountExchange = parseFloat(
-        amount.amountExchange.replace('.', '').replace(',', '.'),
-      )
+      const parseredAmount = parseFloat(amount.amount)
+      const parseredAmountExchange = parseFloat(amount.amountExchange)
       listAmounts.push(parseredAmount)
       listExchangeRates.push(parseredAmountExchange)
     }
@@ -106,6 +106,7 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
       securityNumber: parseInt(data.securityNumber),
       quantityMonths: parseInt(data.quantityMonths),
       dateEmit: format(data.dateEmit, 'dd/MM/yyyy'),
+      documentId,
     }
     mutate(dataParameters, {
       onSuccess: (data) => {
@@ -120,6 +121,10 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
       },
     })
   }
+
+  useEffect(() => {
+    setDocumentId(generateUUID())
+  }, [])
 
   return (
     <div className="max-w-xl rounded-xl border bg-card p-6 text-card-foreground shadow">
@@ -140,14 +145,12 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
             ]}
             classNameItem="flex-0"
           />
-          <InputController
+          <NumberFormatController
             name="holderId"
             label="Núm. de identificación"
-            classNameItem="flex-1"
             placeholder="Ej: 27.811.211"
-            type="tel"
-            inputMode="numeric"
-            pattern="[0-9]*"
+            classNameItem="flex-1"
+            decimalScale={0}
           />
         </div>
 
@@ -185,12 +188,10 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
           type="text"
         />
 
-        <InputController
+        <NumberFormatController
           name="securityNumber"
           label="Núm. de Hoja de Seguridad"
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
+          decimalScale={0}
         />
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
           <DatePickerController
@@ -241,7 +242,7 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger onClick={handleAddAmount} type="button">
-                <PlusCircleIcon />
+                <PlusCircleIcon size={32} />
               </TooltipTrigger>
               <TooltipContent>
                 <p>Agregar valores</p>

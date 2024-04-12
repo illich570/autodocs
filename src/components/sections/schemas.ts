@@ -29,6 +29,7 @@ const CertificateSchemaParams = merge([
     dateEmit: string(),
     quantityMonths: number(),
     securityNumber: number(),
+    documentId: string(),
   }),
 ])
 

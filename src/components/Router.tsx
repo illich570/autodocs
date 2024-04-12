@@ -8,7 +8,7 @@ const Router = () => {
       <Route path="/" component={Home} />
       <Route path="/about" component={About} />
       <Route path="/:rest*">
-        {(params) => `404, Sorry the page ${params.rest} does not exist!`}
+        {(params) => `404, Sorry the page ${params['rest*']} does not exist!`}
       </Route>
     </Switch>
   )

@@ -33,7 +33,7 @@ const NumberFormatController = ({
         <FormItem className={classNameItem}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <NumberFormatInput {...field} {...propsField} />
+            <NumberFormatInput fieldProps={field} {...propsField} />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
           <FormMessage />

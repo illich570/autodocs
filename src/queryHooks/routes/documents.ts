@@ -1,5 +1,5 @@
 const APIDocuments = {
-  generateDocument: '/generate_document',
+  generateDocument: 'documents/generate',
 }
 
 export { APIDocuments }
