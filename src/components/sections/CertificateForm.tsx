@@ -23,7 +23,7 @@ import { toast } from 'sonner'
 import { isAxiosError } from 'axios'
 import { CertificateSchemaForm, CertificateSchemaParams } from '@/components/sections/schemas'
 import { format } from 'date-fns'
-import { generateUUID } from '@/utils'
+import { generateUUID, formatAmount, getFormatCurrency } from '@/utils'
 
 export type Iamounts = {
   amount: string
@@ -190,7 +190,7 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
 
         <NumberFormatController
           name="securityNumber"
-          label="Núm. de Hoja de Seguridad"
+          label="Núm. de hoja de Seguridad"
           decimalScale={0}
         />
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
@@ -235,20 +235,22 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
           <NumberFormatController
             name="amountExchange"
             label="Tasa de cambio"
-            description="Monto de Tasa de cambio mensual"
+            description="Monto de tasa de cambio mensual"
             placeholder="Ej: 36,10"
             classNameItem="flex-0"
           />
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger onClick={handleAddAmount} type="button">
-                <PlusCircleIcon size={32} />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Agregar valores</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className="flex flex-1 items-center justify-center">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger onClick={handleAddAmount} type="button" title="Agregar valores">
+                  <PlusCircleIcon size={32} />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Agregar valores</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
         <Table className="my-2">
           <TableHeader>
@@ -261,12 +263,12 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
             {amounts.map((amount) => (
               <TableRow key={`table_row_${amount.id}`}>
                 <TableCell className="text-center">
-                  {amount.amount + ' '}
-                  {getValues('currency')}
+                  {formatAmount(amount.amount) + ' '}
+                  {getFormatCurrency(getValues('currency'))}
                 </TableCell>
                 <TableCell className="text-center">
-                  {amount.amountExchange + ' '}
-                  {getValues('currency')}
+                  {formatAmount(amount.amountExchange) + ' '}
+                  {getFormatCurrency(getValues('currency'))}
                 </TableCell>
                 <TableCell className="w-[50px] text-center">
                   <TooltipProvider>
