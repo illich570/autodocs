@@ -25,8 +25,7 @@ const cookies = new Cookies()
 
 const AuthProvider = ({ children }: authProviderProps) => {
   const [user, setUser] = useState<object | null>(null)
-  const isAuth = cookies.get('access_token')!
-
+  const [isAuth, setIsAuth] = useState<boolean>(false)
   const login = useCallback((token: string) => {
     const decodedToken = jwtDecode(token)
     setUser(decodedToken)
@@ -43,6 +42,7 @@ const AuthProvider = ({ children }: authProviderProps) => {
     if (token) {
       const decodedToken = jwtDecode(token)
       setUser(decodedToken)
+      setIsAuth(true)
     }
   }, [])
 

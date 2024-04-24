@@ -5,6 +5,7 @@ import { LoginSchema } from '@/components/sections/schemas'
 import { Button } from '@/components/ui/Button'
 import { useLogin } from '@/queryHooks/useAuth'
 import { valibotResolver } from '@hookform/resolvers/valibot'
+import { useNavigate } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -12,6 +13,7 @@ import { Input } from 'valibot'
 
 type validateLoginSchema = Input<typeof LoginSchema>
 const LoginForm = () => {
+  const navigate = useNavigate()
   const { mutate } = useLogin()
   const { login } = useAuth()
   const methods = useForm<validateLoginSchema>({
@@ -27,6 +29,7 @@ const LoginForm = () => {
       onSuccess: ({ data }) => {
         login(data.data.accessToken)
         toast.success('Inicio de sesión exitoso')
+        navigate({ to: '/dashboard' })
       },
       onError: (error) => {
         if (isAxiosError(error)) {
