@@ -1,10 +1,10 @@
-import { Link } from 'wouter'
+import { Link } from '@tanstack/react-router'
 
 const About = () => {
   return (
     <div>
       <h1>Hello</h1>
-      <Link href="/">Vuelve!</Link>
+      <Link to="/">Vuelve!</Link>
     </div>
   )
 }
