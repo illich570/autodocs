@@ -1,5 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
+import HomeWrapper from '@/pages/HomeWrapper'
+import { createLazyFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/')({
-  component: () => <div>Hello /!</div>,
+export const Route = createLazyFileRoute('/')({
+  component: HomeWrapper,
 })

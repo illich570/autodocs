@@ -5,17 +5,32 @@ import { LoginSchema } from '@/components/sections/schemas'
 import { Button } from '@/components/ui/Button'
 import { useLogin } from '@/queryHooks/useAuth'
 import { valibotResolver } from '@hookform/resolvers/valibot'
-import { useNavigate } from '@tanstack/react-router'
+import { useRouter, useSearch } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
+import { useLayoutEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { Input } from 'valibot'
 
 type validateLoginSchema = Input<typeof LoginSchema>
 const LoginForm = () => {
-  const navigate = useNavigate()
   const { mutate } = useLogin()
-  const { login } = useAuth()
+  const { login, isAuth } = useAuth()
+
+  const router = useRouter()
+  const search = useSearch({
+    from: '/login',
+  })
+
+  useLayoutEffect(() => {
+    if (search.redirect && isAuth) {
+      router.history.push(search.redirect)
+    } else if (isAuth) {
+      router.history.push('/dashboard')
+      toast.success('Sesión iniciada')
+    }
+  }, [search.redirect, isAuth, router])
+
   const methods = useForm<validateLoginSchema>({
     resolver: valibotResolver(LoginSchema),
     defaultValues: {
@@ -25,11 +40,10 @@ const LoginForm = () => {
   })
 
   const submit = async (data: validateLoginSchema) => {
-    await mutate(data, {
+    mutate(data, {
       onSuccess: ({ data }) => {
         login(data.data.accessToken)
-        toast.success('Inicio de sesión exitoso')
-        navigate({ to: '/dashboard' })
+        router.invalidate()
       },
       onError: (error) => {
         if (isAxiosError(error)) {
@@ -38,6 +52,7 @@ const LoginForm = () => {
       },
     })
   }
+
   return (
     <FormProvider methods={methods} onSubmit={submit} className="flex flex-col space-y-4">
       <InputController name="email" label="Correo electrónico" />

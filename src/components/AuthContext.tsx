@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, ReactNode, useCallback, useContext, useState } from 'react'
 import Cookies from 'universal-cookie'
 import { jwtDecode } from 'jwt-decode'
 
@@ -23,9 +23,18 @@ const initialValue = {
 const AuthContext = createContext<authContextType>(initialValue)
 const cookies = new Cookies()
 
+const getAuthUser = () => {
+  const token = cookies.get('access_token')
+  if (token) {
+    const decodedToken = jwtDecode(token)
+    return decodedToken
+  }
+  return null
+}
+
 const AuthProvider = ({ children }: authProviderProps) => {
-  const [user, setUser] = useState<object | null>(null)
-  const [isAuth, setIsAuth] = useState<boolean>(false)
+  const [user, setUser] = useState<object | null>(getAuthUser())
+  const isAuth = !!user
   const login = useCallback((token: string) => {
     const decodedToken = jwtDecode(token)
     setUser(decodedToken)
@@ -37,14 +46,8 @@ const AuthProvider = ({ children }: authProviderProps) => {
     cookies.remove('access_token')
   }, [])
 
-  useEffect(() => {
-    const token = cookies.get('access_token')
-    if (token) {
-      const decodedToken = jwtDecode(token)
-      setUser(decodedToken)
-      setIsAuth(true)
-    }
-  }, [])
+  console.log(isAuth)
+  console.log('Desde el context')
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isAuth }}>{children}</AuthContext.Provider>
