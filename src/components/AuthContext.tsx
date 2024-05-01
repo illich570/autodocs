@@ -6,8 +6,16 @@ type authProviderProps = {
   children: ReactNode
 }
 
+type userToken = {
+  id: number
+  firstName: string
+  lastName: string
+  email: string
+  iat: number
+}
+
 export type authContextType = {
-  user: object | null
+  user: userToken | null
   login: (token: string) => void
   logout: () => void
   isAuth: boolean
@@ -26,17 +34,17 @@ const cookies = new Cookies()
 const getAuthUser = () => {
   const token = cookies.get('access_token')
   if (token) {
-    const decodedToken = jwtDecode(token)
+    const decodedToken = jwtDecode(token) as userToken
     return decodedToken
   }
   return null
 }
 
 const AuthProvider = ({ children }: authProviderProps) => {
-  const [user, setUser] = useState<object | null>(getAuthUser())
+  const [user, setUser] = useState<userToken | null>(getAuthUser())
   const isAuth = !!user
   const login = useCallback((token: string) => {
-    const decodedToken = jwtDecode(token)
+    const decodedToken = jwtDecode(token) as userToken
     setUser(decodedToken)
     cookies.set('access_token', token)
   }, [])
@@ -45,9 +53,6 @@ const AuthProvider = ({ children }: authProviderProps) => {
     setUser(null)
     cookies.remove('access_token')
   }, [])
-
-  console.log(isAuth)
-  console.log('Desde el context')
 
   return (
     <AuthContext.Provider value={{ user, login, logout, isAuth }}>{children}</AuthContext.Provider>

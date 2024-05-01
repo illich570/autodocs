@@ -1,7 +1,7 @@
 import { CertificateSchemaParams } from '@/components/sections/schemas'
 import { axiosInstance } from '@/lib/api'
 import { APIDocuments } from '@/queryHooks/routes/documents'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Input } from 'valibot'
 
 type validationParamsSchema = Input<typeof CertificateSchemaParams>
@@ -13,10 +13,22 @@ const generateDocument = async (document: validationParamsSchema) => {
   return data
 }
 
+const getDocuments = async () => {
+  const { data } = await axiosInstance.get(APIDocuments.getAllDocuments)
+  return data
+}
+
 const useGenerateDocument = () => {
   return useMutation({
     mutationFn: generateDocument,
   })
 }
 
-export { useGenerateDocument }
+const useGetDocuments = () => {
+  return useQuery({
+    queryKey: [APIDocuments.getAllDocuments],
+    queryFn: getDocuments,
+  })
+}
+
+export { useGenerateDocument, useGetDocuments }

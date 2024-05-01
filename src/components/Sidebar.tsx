@@ -1,4 +1,4 @@
-import { LayoutDashboardIcon } from 'lucide-react'
+import { FileCogIcon, LayoutDashboardIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
 const ITEMS_SIDEBAR = [
@@ -6,6 +6,11 @@ const ITEMS_SIDEBAR = [
     title: 'Dashboard',
     href: '/dashboard',
     icon: <LayoutDashboardIcon />,
+  },
+  {
+    title: 'Generar Documento',
+    href: '/generate',
+    icon: <FileCogIcon />,
   },
 ]
 const Sidebar = () => {

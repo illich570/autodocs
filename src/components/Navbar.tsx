@@ -13,8 +13,9 @@ import { UserIcon } from 'lucide-react'
 import { toast } from 'sonner'
 
 const Navbar = () => {
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const navigate = useNavigate()
+  const fullName = `${user?.firstName} ${user?.lastName}`
 
   const handleLogout = () => {
     logout()
@@ -34,7 +35,7 @@ const Navbar = () => {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-48" side="left" align="start">
-            <DropdownMenuLabel className="bg-accent">Maria Delgado</DropdownMenuLabel>
+            <DropdownMenuLabel className="bg-accent">{fullName}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem className="cursor-pointer">Perfil</DropdownMenuItem>

@@ -15,7 +15,7 @@ const Layout = ({ children }: LayoutProps) => {
           </div>
           <div className="col-span-7">
             <Navbar />
-            {children}
+            <div className="p-6">{children}</div>
           </div>
         </div>
       </main>
