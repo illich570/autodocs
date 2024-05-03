@@ -13,21 +13,35 @@ const generateDocument = async (document: validationParamsSchema) => {
   return data
 }
 
-const getDocuments = async () => {
-  const { data } = await axiosInstance.get(APIDocuments.getAllDocuments)
-  return data
-}
-
 const useGenerateDocument = () => {
   return useMutation({
     mutationFn: generateDocument,
   })
 }
 
-const useGetDocuments = () => {
+const getDocuments = async <TPagination>(
+  limit: TPagination,
+  offset: TPagination,
+): Promise<{
+  success: boolean
+  data: {
+    documents: {
+      id: number
+      documentType: string
+      holderId: number
+      createdAt: string
+    }[]
+    total: number
+  }
+}> => {
+  const { data } = await axiosInstance.get(APIDocuments.getAllDocuments(limit, offset))
+  return data
+}
+
+const useGetDocuments = ({ limit, offset }: { limit: number; offset: number }) => {
   return useQuery({
-    queryKey: [APIDocuments.getAllDocuments],
-    queryFn: getDocuments,
+    queryKey: [APIDocuments.getAllDocuments, limit, offset],
+    queryFn: () => getDocuments<number>(limit, offset),
   })
 }
 

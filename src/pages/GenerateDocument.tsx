@@ -2,6 +2,7 @@ import { Layout } from '@/components/Layout'
 import { CertificateForm } from '@/components/sections/CertificateForm'
 import { Button } from '@/components/ui/Button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 const GenerateDocument = () => {
@@ -35,27 +36,8 @@ const GenerateDocument = () => {
                 />
               </div>
               <div className="flex w-full flex-col items-center justify-center space-y-3">
-                {/* <h4 className="text-center text-2xl">Acciones</h4>
-                    <Button
-                      type="button"
-                      className="w-[240px]"
-                      variant="informative"
-                      onClick={returnToForm}
-                    >
-                      {' '}
-                      Descargar
-                    </Button>
-                    <Button
-                      type="button"
-                      className="w-[240px]"
-                      variant="success"
-                      onClick={returnToForm}
-                    >
-                      {' '}
-                      Descargar
-                    </Button> */}
                 <Button type="button" className="w-[240px]" variant="outline">
-                  Ir a Inicio
+                  <Link to="/dashboard">Ir a Inicio</Link>
                 </Button>
               </div>
             </div>
