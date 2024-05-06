@@ -1,9 +1,9 @@
 import DataTable from '@/components/ui/DataTable'
-import { useGetDocuments } from '@/queryHooks/useDocuments'
+import { useGetDocumentFile, useGetDocuments } from '@/queryHooks/useDocuments'
 import { formatAmount } from '@/utils'
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { MoreHorizontal } from 'lucide-react'
 
 import { Button } from '@/components/ui/Button'
@@ -11,11 +11,10 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/DropdownMenu'
-import UsePagination from '@/hooks/UsePagination'
+import usePagination from '@/hooks/UsePagination'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 type Document = {
   id: number
@@ -25,8 +24,12 @@ type Document = {
 }
 
 const DocumentList = () => {
-  const { limit, onPaginationChange, pagination, offset } = UsePagination()
+  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [selectedDocument, setSelectedDocument] = useState<number | null>(null)
+
+  const { limit, onPaginationChange, pagination, offset } = usePagination()
   const { data, isLoading } = useGetDocuments({ limit, offset })
+  const { data: resultPdf } = useGetDocumentFile(selectedDocument)
 
   const columns = useMemo<ColumnDef<Document>[]>(() => {
     return [
@@ -51,7 +54,7 @@ const DocumentList = () => {
       {
         header: 'Acciones',
         id: 'actions',
-        cell: () => {
+        cell: ({ row }) => {
           return (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -61,11 +64,9 @@ const DocumentList = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => console.log('Hola')}>
+                <DropdownMenuItem onClick={() => setSelectedDocument(row.getValue('id'))}>
                   Ver documento
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
               </DropdownMenuContent>
             </DropdownMenu>
           )
@@ -74,6 +75,11 @@ const DocumentList = () => {
     ]
   }, [])
 
+  useEffect(() => {
+    if (resultPdf) {
+      setOpenModal(true)
+    }
+  }, [resultPdf])
   return (
     <>
       {isLoading && <p>Cargando...</p>}
@@ -84,6 +90,40 @@ const DocumentList = () => {
         pagination={pagination}
         totalRows={data?.data?.total || 0}
       />
+      <Dialog open={openModal} onOpenChange={setOpenModal}>
+        <DialogContent className="max-h-screen md:max-w-3xl lg:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl">Documento</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-1 flex-col">
+            <div className="w-full">
+              {resultPdf ? (
+                <iframe
+                  src={URL.createObjectURL(resultPdf)}
+                  style={{
+                    width: '100%',
+                    height: '65vh',
+                    marginBottom: '1rem',
+                  }}
+                />
+              ) : null}
+            </div>
+            <div className="flex w-full flex-col items-center justify-center space-y-3">
+              <Button
+                type="button"
+                className="w-[240px]"
+                variant="outline"
+                onClick={() => {
+                  setOpenModal(false)
+                  setSelectedDocument(null)
+                }}
+              >
+                Cerrar
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

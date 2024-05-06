@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 
 const GenerateDocument = () => {
   const [resultPdf, setResultPdf] = useState<string | null>(null)
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
   useEffect(() => {
     if (resultPdf) {

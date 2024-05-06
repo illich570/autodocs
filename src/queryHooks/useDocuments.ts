@@ -45,4 +45,19 @@ const useGetDocuments = ({ limit, offset }: { limit: number; offset: number }) =
   })
 }
 
-export { useGenerateDocument, useGetDocuments }
+const getDocumentFile = async (documentId: number | null): Promise<Blob> => {
+  const { data } = await axiosInstance.get<Blob>(APIDocuments.getDocumentFile(documentId), {
+    responseType: 'blob',
+  })
+  return data
+}
+
+const useGetDocumentFile = (documentId: number | null) => {
+  return useQuery({
+    queryKey: [APIDocuments.getDocumentFile, documentId],
+    queryFn: () => getDocumentFile(documentId),
+    enabled: !!documentId,
+  })
+}
+
+export { useGenerateDocument, useGetDocuments, useGetDocumentFile }
