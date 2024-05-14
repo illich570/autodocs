@@ -9,6 +9,8 @@ import {
   merge,
   omit,
   email,
+  forward,
+  custom,
 } from 'valibot'
 
 const BaseCertificateForm = object({
@@ -49,4 +51,34 @@ const LoginSchema = object({
   password: string([minLength(1, 'La contraseña es requerida')]),
 })
 
-export { CertificateSchemaForm, CertificateSchemaParams, LoginSchema }
+const CreateUserSchema = object(
+  {
+    firstName: string([minLength(1, 'El nombre es requerido')]),
+    lastName: string(),
+    email: string([minLength(1, 'El correo es requerido'), email('Ingrese un correo válido')]),
+    password: string([
+      minLength(1, 'La contraseña es requerida'),
+      minLength(8, 'La contraseña debe tener al menos 8 caracteres'),
+    ]),
+    confirmPassword: string([minLength(1, 'La confirmación de contraseña es requerida')]),
+    typeUserId: string([minLength(1, 'El tipo de usuario es requerido')]),
+  },
+  [
+    forward(
+      custom((input) => input.password === input.confirmPassword, 'Las contraseñas no coinciden'),
+      ['confirmPassword'],
+    ),
+  ],
+)
+
+const CreateUser = merge([CreateUserSchema, object({ typeUserId: number() })])
+
+const CreateUserParams = omit(CreateUser, ['confirmPassword'])
+
+export {
+  CertificateSchemaForm,
+  CertificateSchemaParams,
+  LoginSchema,
+  CreateUserSchema,
+  CreateUserParams,
+}

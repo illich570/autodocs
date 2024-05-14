@@ -17,7 +17,7 @@ const GenerateDocument = () => {
 
   return (
     <Layout>
-      <div className="flex w-full flex-row justify-center space-x-4 pt-6">
+      <div className="flex w-full flex-row justify-center pt-6">
         <CertificateForm handleResultPdf={setResultPdf} />
         <Dialog open={openModal} onOpenChange={setOpenModal}>
           <DialogContent className="max-h-screen md:max-w-3xl lg:max-w-4xl">

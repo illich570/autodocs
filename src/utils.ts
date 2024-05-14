@@ -17,4 +17,16 @@ const getFormatCurrency = (currency: string): string => {
   return currencies[currency] || 'N/A'
 }
 
-export { generateUUID, formatAmount, getFormatCurrency }
+const TYPE_USERS = {
+  Administrador: {
+    name: 'Administrador',
+  },
+  Contador: {
+    name: 'Contador',
+  },
+  Cliente: {
+    name: 'Cliente',
+  },
+}
+
+export { generateUUID, formatAmount, getFormatCurrency, TYPE_USERS }

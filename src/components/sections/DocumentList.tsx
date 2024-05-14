@@ -82,6 +82,7 @@ const DocumentList = () => {
   }, [resultPdf])
   return (
     <>
+      <h2 className="pb-2 text-2xl font-semibold tracking-tight first:mt-0">Lista de documentos</h2>
       {isLoading && <p>Cargando...</p>}
       <DataTable
         columns={columns}

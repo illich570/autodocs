@@ -1,4 +1,4 @@
-import { FileCogIcon, LayoutDashboardIcon } from 'lucide-react'
+import { FileCogIcon, LayoutDashboardIcon, UserPlusIcon } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 
 const ITEMS_SIDEBAR = [
@@ -12,6 +12,11 @@ const ITEMS_SIDEBAR = [
     href: '/generate',
     icon: <FileCogIcon />,
   },
+  {
+    title: 'Crear usuario',
+    href: '/create_user',
+    icon: <UserPlusIcon />,
+  },
 ]
 const Sidebar = () => {
   return (
@@ -22,6 +27,7 @@ const Sidebar = () => {
             to={item.href}
             key={item.title}
             className="group flex h-full items-center rounded-md border border-transparent px-2 py-1 text-muted-foreground hover:underline"
+            preload={false}
           >
             <span className="mr-2">{item.icon}</span>
             {item.title}

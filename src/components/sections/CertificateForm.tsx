@@ -35,14 +35,14 @@ type FormProps = {
   handleResultPdf: Dispatch<React.SetStateAction<string | null>>
 }
 
+type validationSchema = Input<typeof CertificateSchemaForm>
+type validationParamsSchema = Input<typeof CertificateSchemaParams>
+
 const CertificateForm = ({ handleResultPdf }: FormProps) => {
   const [amounts, setAmounts] = useState<Iamounts[]>([])
   const [documentId, setDocumentId] = useState<string>('')
 
   const { mutate } = useGenerateDocument()
-
-  type validationSchema = Input<typeof CertificateSchemaForm>
-  type validationParamsSchema = Input<typeof CertificateSchemaParams>
 
   const methods = useForm<validationSchema>({
     resolver: valibotResolver(CertificateSchemaForm),
