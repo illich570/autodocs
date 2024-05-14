@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useCallback, useContext, useState } from 'react'
-import Cookies from 'universal-cookie'
 import { jwtDecode } from 'jwt-decode'
 
 type authProviderProps = {
@@ -8,6 +7,7 @@ type authProviderProps = {
 
 type userToken = {
   id: number
+  typeUserName: string
   firstName: string
   lastName: string
   email: string
@@ -29,29 +29,28 @@ const initialValue = {
 }
 
 const AuthContext = createContext<authContextType>(initialValue)
-const cookies = new Cookies()
 
-const getAuthUser = () => {
-  const token = cookies.get('access_token')
-  if (token) {
-    const decodedToken = jwtDecode(token) as userToken
-    return decodedToken
+const checkUser = () => {
+  const user = localStorage.getItem('user')
+  if (user) {
+    return JSON.parse(user) as userToken
   }
   return null
 }
 
 const AuthProvider = ({ children }: authProviderProps) => {
-  const [user, setUser] = useState<userToken | null>(getAuthUser())
+  const [user, setUser] = useState<userToken | null>(checkUser())
   const isAuth = !!user
+
   const login = useCallback((token: string) => {
     const decodedToken = jwtDecode(token) as userToken
     setUser(decodedToken)
-    cookies.set('access_token', token)
+    localStorage.setItem('user', JSON.stringify(decodedToken))
   }, [])
 
   const logout = useCallback(() => {
     setUser(null)
-    cookies.remove('access_token')
+    localStorage.removeItem('user')
   }, [])
 
   return (
