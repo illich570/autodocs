@@ -28,5 +28,6 @@ const TYPE_USERS = {
     name: 'Cliente',
   },
 }
+//console.log hola
 
 export { generateUUID, formatAmount, getFormatCurrency, TYPE_USERS }

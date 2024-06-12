@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
     "format": "prettier --write . ",
     "preview": "vite preview",
-    "postinstall": "husky install"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
