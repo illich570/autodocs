@@ -75,10 +75,25 @@ const CreateUser = merge([CreateUserSchema, object({ typeUserId: number() })])
 
 const CreateUserParams = omit(CreateUser, ['confirmPassword'])
 
+const CreateRelationClientAccountantSchema = object({
+  clientId: string([minLength(1, 'El cliente es requerido')]),
+  accountantId: string([minLength(1, 'El cajero es requerido')]),
+})
+
+const CreateRelationClientAccountant = merge([
+  CreateRelationClientAccountantSchema,
+  object({
+    clientId: number(),
+    accountantId: number(),
+  }),
+])
+
 export {
   CertificateSchemaForm,
   CertificateSchemaParams,
   LoginSchema,
   CreateUserSchema,
   CreateUserParams,
+  CreateRelationClientAccountantSchema,
+  CreateRelationClientAccountant,
 }

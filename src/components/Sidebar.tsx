@@ -17,6 +17,11 @@ const ITEMS_SIDEBAR = [
     href: '/create_user',
     icon: <UserPlusIcon />,
   },
+  {
+    title: 'Vincular cliente',
+    href: '/vinculate_client',
+    icon: <UserPlusIcon />,
+  },
 ]
 const Sidebar = () => {
   return (
