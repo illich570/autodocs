@@ -264,7 +264,8 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
               <TableRow key={`table_row_${amount.id}`}>
                 <TableCell className="text-center">
                   {formatAmount(amount.amount) + ' '}
-                  {getFormatCurrency(getValues('currency'))}
+                  {/* {if the case is in bs, we need to express this amount in dollars} */}
+                  {getValues('currency') === 'BS' && getFormatCurrency('USD')}
                 </TableCell>
                 <TableCell className="text-center">
                   {formatAmount(amount.amountExchange) + ' '}
