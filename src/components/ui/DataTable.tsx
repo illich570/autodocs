@@ -115,7 +115,7 @@ const DataTable = <TData, TValue>({
                   {
                     length: table.getState().pagination.pageSize - table.getRowModel().rows.length,
                   },
-                  (x, i) => i,
+                  (_, i) => i,
                 ).map((element) => (
                   <TableRow key={`index_${element}`} className="h-16 w-full border-transparent" />
                 ))}
