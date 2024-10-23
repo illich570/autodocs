@@ -64,7 +64,10 @@ const DocumentList = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setSelectedDocument(row.getValue('id'))}>
+                <DropdownMenuItem
+                  onClick={() => setSelectedDocument(row.getValue('id'))}
+                  className="cursor-pointer"
+                >
                   Ver documento
                 </DropdownMenuItem>
               </DropdownMenuContent>

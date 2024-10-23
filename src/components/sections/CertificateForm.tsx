@@ -24,6 +24,7 @@ import { isAxiosError } from 'axios'
 import { CertificateSchemaForm, CertificateSchemaParams } from '@/components/sections/schemas'
 import { format } from 'date-fns'
 import { generateUUID, formatAmount, getFormatCurrency } from '@/utils'
+import { es } from 'date-fns/locale'
 
 export type Iamounts = {
   amount: string
@@ -255,13 +256,24 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
         <Table className="my-2">
           <TableHeader>
             <TableRow>
+              <TableHead className="text-center">Mes</TableHead>
               <TableHead className="text-center">Ingreso</TableHead>
               <TableHead className="text-center">Tasa</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {amounts.map((amount) => (
+            {amounts.map((amount, index) => (
               <TableRow key={`table_row_${amount.id}`}>
+                <TableCell className="text-center">
+                  {format(
+                    new Date(getValues('dateGenerate')).setMonth(
+                      new Date(getValues('dateGenerate')).getMonth() -
+                        (parseInt(getValues('quantityMonths')) - index - 1),
+                    ),
+                    'MMMM',
+                    { locale: es },
+                  )}
+                </TableCell>
                 <TableCell className="text-center">
                   {formatAmount(amount.amount) + ' '}
                   {/* {if the case is in bs, we need to express this amount in dollars} */}
