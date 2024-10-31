@@ -3,24 +3,23 @@ import Card from '@/components/ui/Card'
 
 const Login = () => {
   return (
-    <div className="relative flex min-h-screen flex-col bg-background">
-      <main className="flex h-full w-full flex-1 border-b">
+    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-400 to-orange-400 p-4 dark:from-gray-900 dark:to-gray-800">
+      <main className="flex h-full w-full flex-1">
         <div className="container flex w-full flex-col items-center justify-center">
-          <Card className="w-full max-w-md">
-            <h3 className="pb-2 text-center text-2xl font-semibold tracking-tight first:mt-0">
+          <Card className="w-full max-w-md space-y-1">
+            <h3 className="pb-2 text-center text-2xl font-semibold leading-none tracking-tight first:mt-0">
               Iniciar sesión
             </h3>
+            <p className="text-center text-sm text-muted-foreground">
+              Ingresa tus credenciales para acceder
+            </p>
             <LoginForm />
+            <p className="text-balance text-center leading-loose text-muted-foreground">
+              Built by IllichR. 2024
+            </p>
           </Card>
         </div>
       </main>
-      <footer className="border-t py-2 md:px-8 md:py-0">
-        <div className="container flex flex-col items-center justify-between gap-4  md:h-24 md:flex-row">
-          <p className="text-balance text-center leading-loose text-muted-foreground md:text-left">
-            Built by IllichR. 2024
-          </p>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { useLogin } from '@/queryHooks/useAuth'
 import { valibotResolver } from '@hookform/resolvers/valibot'
 import { useRouter, useSearch } from '@tanstack/react-router'
 import { isAxiosError } from 'axios'
+import { LockIcon, MailIcon } from 'lucide-react'
 import { useLayoutEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -55,8 +56,8 @@ const LoginForm = () => {
 
   return (
     <FormProvider methods={methods} onSubmit={submit} className="flex flex-col space-y-4">
-      <InputController name="email" label="Correo electrónico" />
-      <InputController name="password" label="Contraseña" type="password" />
+      <InputController name="email" label="Correo electrónico" Icon={MailIcon} />
+      <InputController name="password" label="Contraseña" type="password" Icon={LockIcon} />
       <Button type="submit">Iniciar sesión</Button>
     </FormProvider>
   )
