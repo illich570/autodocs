@@ -1,4 +1,4 @@
-import { useAuth } from '@/components/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import { FormProvider } from '@/components/FormProvider'
 import { InputController } from '@/components/form/InputController'
 import { LoginSchema } from '@/components/sections/schemas'

@@ -1,4 +1,4 @@
-import { useAuth } from '@/components/AuthContext'
+import { useAuth } from '@/contexts/AuthContext'
 import router from '@/lib/router'
 import { RouterProvider } from '@tanstack/react-router'
 

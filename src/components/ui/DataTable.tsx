@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from '@/components/ui/Select'
 import { Dispatch, SetStateAction } from 'react'
+import { cn } from '@/lib/utils'
+import { useIsTablet } from '@/hooks/UseBreakpoint'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -62,6 +64,7 @@ const DataTable = <TData, TValue>({
   pagination,
   totalRows,
 }: DataTableProps<TData, TValue>) => {
+  const isTablet = useIsTablet()
   const table = useReactTable({
     data,
     columns,
@@ -80,77 +83,85 @@ const DataTable = <TData, TValue>({
     },
   })
 
+  const mobileTextClass = cn({ 'text-xs': isTablet })
+
   return (
-    <div className="w-full">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(header.column.columnDef.header, header.getContext())}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              <>
-                {table.getRowModel().rows.map((row) => (
-                  <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-                {Array.from(
-                  {
-                    length: table.getState().pagination.pageSize - table.getRowModel().rows.length,
-                  },
-                  (_, i) => i,
-                ).map((element) => (
-                  <TableRow key={`index_${element}`} className="h-16 w-full border-transparent" />
-                ))}
-              </>
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Sin resultados
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+    <div className="w-full rounded-md border bg-white p-2 shadow-sm dark:bg-gray-800">
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id} className={mobileTextClass}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                )
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            <>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className={mobileTextClass}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+              {Array.from(
+                {
+                  length: table.getState().pagination.pageSize - table.getRowModel().rows.length,
+                },
+                (_, i) => i,
+              ).map((element) => (
+                <TableRow key={`index_${element}`} className="h-16 w-full border-transparent" />
+              ))}
+            </>
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={columns.length}
+                className={cn('h-24 text-center', mobileTextClass)}
+              >
+                Sin resultados
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex items-center justify-center space-x-2">
-          <p className="text-sm font-medium">Filas por página: </p>
+          <p className={cn('text-sm font-medium', mobileTextClass)}>Filas por página: </p>
 
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => table.setPageSize(Number(value))}
           >
-            <SelectTrigger className="h-9 w-[70px]">
+            <SelectTrigger className={cn('h-9 w-[70px]', mobileTextClass)}>
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
               {listRows.map((item) => (
-                <SelectItem key={item.value} value={`${item.value}`}>
+                <SelectItem key={item.value} value={`${item.value}`} className={mobileTextClass}>
                   {item.label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="flex w-[100px] items-center justify-center text-sm font-medium">
+        <div
+          className={cn(
+            'flex w-[100px] items-center justify-center text-sm font-medium',
+            mobileTextClass,
+          )}
+        >
           Página {table.getState().pagination.pageIndex + 1} de {table.getPageCount()}
         </div>
 
@@ -159,16 +170,18 @@ const DataTable = <TData, TValue>({
           size="sm"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className={mobileTextClass}
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={isTablet ? 12 : 16} />
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className={mobileTextClass}
         >
-          <ArrowRight size={16} />
+          <ArrowRight size={isTablet ? 12 : 16} />
         </Button>
       </div>
     </div>

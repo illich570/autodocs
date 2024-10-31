@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/DropdownMenu'
 import usePagination from '@/hooks/UsePagination'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import useIsMobile from '@/hooks/UseIsMobile'
 
 type Document = {
   id: number
@@ -26,6 +27,7 @@ type Document = {
 const DocumentList = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedDocument, setSelectedDocument] = useState<number | null>(null)
+  const isMobile = useIsMobile()
 
   const { limit, onPaginationChange, pagination, offset } = usePagination()
   const { data, isLoading } = useGetDocuments({ limit, offset })
@@ -68,7 +70,7 @@ const DocumentList = () => {
                   onClick={() => setSelectedDocument(row.getValue('id'))}
                   className="cursor-pointer"
                 >
-                  Ver documento
+                  {isMobile ? 'Descargar documento' : 'Ver documento'}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -76,13 +78,24 @@ const DocumentList = () => {
         },
       },
     ]
-  }, [])
+  }, [isMobile])
 
   useEffect(() => {
     if (resultPdf) {
-      setOpenModal(true)
+      if (isMobile) {
+        const url = URL.createObjectURL(resultPdf)
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'documento.pdf')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      } else {
+        setOpenModal(true)
+      }
     }
-  }, [resultPdf])
+  }, [resultPdf, isMobile])
+
   return (
     <>
       <h2 className="pb-2 text-2xl font-semibold tracking-tight first:mt-0">Lista de documentos</h2>
@@ -94,40 +107,42 @@ const DocumentList = () => {
         pagination={pagination}
         totalRows={data?.data?.total || 0}
       />
-      <Dialog open={openModal} onOpenChange={setOpenModal}>
-        <DialogContent className="max-h-screen md:max-w-3xl lg:max-w-4xl">
-          <DialogHeader>
-            <DialogTitle className="text-center text-2xl">Documento</DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-1 flex-col">
-            <div className="w-full">
-              {resultPdf ? (
-                <iframe
-                  src={URL.createObjectURL(resultPdf)}
-                  style={{
-                    width: '100%',
-                    height: '65vh',
-                    marginBottom: '1rem',
+      {!isMobile && (
+        <Dialog open={openModal} onOpenChange={setOpenModal}>
+          <DialogContent className="max-h-screen md:max-w-3xl lg:max-w-4xl">
+            <DialogHeader>
+              <DialogTitle className="text-center text-2xl">Documento</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-1 flex-col">
+              <div className="w-full">
+                {resultPdf && (
+                  <iframe
+                    src={URL.createObjectURL(resultPdf)}
+                    style={{
+                      width: '100%',
+                      height: '65vh',
+                      marginBottom: '1rem',
+                    }}
+                  />
+                )}
+              </div>
+              <div className="flex w-full flex-col items-center justify-center space-y-3">
+                <Button
+                  type="button"
+                  className="w-[240px]"
+                  variant="outline"
+                  onClick={() => {
+                    setOpenModal(false)
+                    setSelectedDocument(null)
                   }}
-                />
-              ) : null}
+                >
+                  Cerrar
+                </Button>
+              </div>
             </div>
-            <div className="flex w-full flex-col items-center justify-center space-y-3">
-              <Button
-                type="button"
-                className="w-[240px]"
-                variant="outline"
-                onClick={() => {
-                  setOpenModal(false)
-                  setSelectedDocument(null)
-                }}
-              >
-                Cerrar
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   )
 }
