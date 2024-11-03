@@ -90,11 +90,14 @@ const DocumentList = () => {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+        // Clean up URL object and reset selectedDocument to prevent re-downloading
+        URL.revokeObjectURL(url)
+        setSelectedDocument(null)
       } else {
         setOpenModal(true)
       }
     }
-  }, [resultPdf, isMobile])
+  }, [resultPdf, isMobile, setSelectedDocument])
 
   return (
     <>
