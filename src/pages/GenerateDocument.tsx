@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 
 const GenerateDocument = () => {
   const [resultPdf, setResultPdf] = useState<string | null>(null)
-  const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(true)
   const isMobile = useIsMobileDevice()
 
   useEffect(() => {
@@ -32,7 +32,7 @@ const GenerateDocument = () => {
       <div className="flex w-full flex-row justify-center pt-6">
         <CertificateForm handleResultPdf={setResultPdf} />
         <Dialog open={openModal} onOpenChange={setOpenModal}>
-          <DialogContent className="max-h-screen md:max-w-3xl lg:max-w-4xl">
+          <DialogContent className="max-h-screen max-w-sm rounded-xl md:max-w-3xl lg:max-w-4xl">
             <DialogHeader>
               <DialogTitle className="text-center text-2xl">Documento generado!</DialogTitle>
             </DialogHeader>
