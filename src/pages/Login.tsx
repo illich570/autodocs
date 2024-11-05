@@ -3,7 +3,7 @@ import Card from '@/components/ui/Card'
 
 const Login = () => {
   return (
-    <div className="flex min-h-screen w-full items-center justify-center bg-gradient-to-br from-blue-400 to-orange-400 p-4 dark:from-gray-900 dark:to-gray-800">
+    <div className="flex min-h-svh w-full items-center justify-center bg-gradient-to-br from-blue-400 to-orange-400 p-4 dark:from-gray-900 dark:to-gray-800">
       <main className="flex h-full w-full flex-1">
         <div className="container flex w-full flex-col items-center justify-center">
           <Card className="w-full max-w-md space-y-1">

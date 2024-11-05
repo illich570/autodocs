@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 
-const useIsMobile = () => {
+const useIsMobileDevice = () => {
   const [isMobile, setIsMobile] = useState(false)
 
   const mobileKeywords = useMemo(
@@ -21,4 +21,4 @@ const useIsMobile = () => {
   return isMobile
 }
 
-export default useIsMobile
+export default useIsMobileDevice

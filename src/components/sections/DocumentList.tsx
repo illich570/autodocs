@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/DropdownMenu'
 import usePagination from '@/hooks/UsePagination'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import useIsMobile from '@/hooks/UseIsMobile'
+import useIsMobileDevice from '@/hooks/UseIsMobileDevice'
 
 type Document = {
   id: number
@@ -27,7 +27,7 @@ type Document = {
 const DocumentList = () => {
   const [openModal, setOpenModal] = useState<boolean>(false)
   const [selectedDocument, setSelectedDocument] = useState<number | null>(null)
-  const isMobile = useIsMobile()
+  const isMobile = useIsMobileDevice()
 
   const { limit, onPaginationChange, pagination, offset } = usePagination()
   const { data, isLoading } = useGetDocuments({ limit, offset })

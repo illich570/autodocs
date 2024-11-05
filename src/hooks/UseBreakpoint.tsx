@@ -28,10 +28,14 @@ export function useBreakpoint(breakpoint: Breakpoint) {
   return matches
 }
 
-export function useIsMobile() {
+export function useIsTablet() {
   return useBreakpoint('md')
 }
 
-export function useIsTablet() {
+export function useIsMobile() {
+  return useBreakpoint('sm')
+}
+
+export function useIsDesktop() {
   return useBreakpoint('lg')
 }

@@ -128,11 +128,11 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
   }, [])
 
   return (
-    <div className="max-w-xl rounded-xl border bg-card p-6 text-card-foreground shadow">
+    <div className="w-full max-w-lg rounded-xl border bg-card p-6 text-card-foreground shadow md:max-w-md lg:max-w-xl">
       <h3 className="pb-2 text-2xl font-semibold tracking-tight first:mt-0">
         Certificación de ingresos
       </h3>
-      <FormProvider methods={methods} onSubmit={submit} className="flex flex-col space-y-4">
+      <FormProvider methods={methods} onSubmit={submit} className="flex w-full flex-col space-y-4">
         <InputController name="holderName" label="Nombre del titular" type="text" />
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
           <SelectController
@@ -194,7 +194,7 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
           label="Núm. de hoja de Seguridad"
           decimalScale={0}
         />
-        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
+        <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:space-x-4 lg:space-y-0">
           <DatePickerController
             name="dateGenerate"
             label="Fecha de calculos"
@@ -236,11 +236,11 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
           <NumberFormatController
             name="amountExchange"
             label="Tasa de cambio"
-            description="Monto de tasa de cambio mensual"
+            description="Tasa de cambio mensual"
             placeholder="Ej: 36,10"
             classNameItem="flex-0"
           />
-          <div className="flex flex-1 items-center justify-center">
+          <div className="hidden flex-1 items-center justify-center pt-2 md:flex">
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger onClick={handleAddAmount} type="button" title="Agregar valores">
@@ -253,6 +253,9 @@ const CertificateForm = ({ handleResultPdf }: FormProps) => {
             </TooltipProvider>
           </div>
         </div>
+        <Button type="button" onClick={handleAddAmount} className="md:hidden" variant="informative">
+          Agregar valores
+        </Button>
         <Table className="my-2">
           <TableHeader>
             <TableRow>

@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/Select'
 import { Dispatch, SetStateAction } from 'react'
 import { cn } from '@/lib/utils'
-import { useIsTablet } from '@/hooks/UseBreakpoint'
+import { useIsMobile } from '@/hooks/UseBreakpoint'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -64,7 +64,7 @@ const DataTable = <TData, TValue>({
   pagination,
   totalRows,
 }: DataTableProps<TData, TValue>) => {
-  const isTablet = useIsTablet()
+  const isMobile = useIsMobile()
   const table = useReactTable({
     data,
     columns,
@@ -83,10 +83,10 @@ const DataTable = <TData, TValue>({
     },
   })
 
-  const mobileTextClass = cn({ 'text-xs': isTablet })
+  const mobileTextClass = cn({ 'text-xs': isMobile })
 
   return (
-    <div className="w-full rounded-md border bg-white p-2 shadow-sm dark:bg-gray-800">
+    <div className="relative w-full overflow-auto rounded-md border bg-white p-2 shadow-sm dark:bg-gray-800">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -136,7 +136,12 @@ const DataTable = <TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div
+        className={cn(
+          'flex items-center justify-end space-x-2 py-4',
+          isMobile && 'justify-center space-x-1',
+        )}
+      >
         <div className="flex items-center justify-center space-x-2">
           <p className={cn('text-sm font-medium', mobileTextClass)}>Filas por página: </p>
 
@@ -144,7 +149,7 @@ const DataTable = <TData, TValue>({
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => table.setPageSize(Number(value))}
           >
-            <SelectTrigger className={cn('h-9 w-[70px]', mobileTextClass)}>
+            <SelectTrigger className={cn('h-8 w-[70px]', mobileTextClass)}>
               <SelectValue placeholder={table.getState().pagination.pageSize} />
             </SelectTrigger>
             <SelectContent side="top">
@@ -172,7 +177,7 @@ const DataTable = <TData, TValue>({
           disabled={!table.getCanPreviousPage()}
           className={mobileTextClass}
         >
-          <ArrowLeft size={isTablet ? 12 : 16} />
+          <ArrowLeft size={isMobile ? 12 : 16} />
         </Button>
         <Button
           variant="outline"
@@ -181,7 +186,7 @@ const DataTable = <TData, TValue>({
           disabled={!table.getCanNextPage()}
           className={mobileTextClass}
         >
-          <ArrowRight size={isTablet ? 12 : 16} />
+          <ArrowRight size={isMobile ? 12 : 16} />
         </Button>
       </div>
     </div>
