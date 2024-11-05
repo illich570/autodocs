@@ -2,14 +2,14 @@ import { Layout } from '@/components/Layout'
 import { CertificateForm } from '@/components/sections/CertificateForm'
 import { Button } from '@/components/ui/Button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { useSidebar } from '@/contexts/SidebarContext'
+import useIsMobileDevice from '@/hooks/UseIsMobileDevice'
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 
 const GenerateDocument = () => {
   const [resultPdf, setResultPdf] = useState<string | null>(null)
   const [openModal, setOpenModal] = useState<boolean>(false)
-  const { isMobile } = useSidebar()
+  const isMobile = useIsMobileDevice()
 
   useEffect(() => {
     if (resultPdf) {
